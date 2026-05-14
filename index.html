@@ -1,369 +1,811 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>ListenMind · Project Tracker (Chỉnh sửa trực tiếp)</title>
-  <!-- Tabler Icons -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      background: var(--color-background-primary);
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', sans-serif;
-      padding: 1rem;
-    }
-    :root {
-      --accent-yen: #185FA5;
-      --accent-phuong: #0F6E56;
-      --color-background-primary: #ffffff;
-      --color-background-secondary: #f8fafc;
-      --color-border-tertiary: rgba(0, 0, 0, 0.08);
-      --color-border-secondary: rgba(0, 0, 0, 0.12);
-      --color-text-primary: #111827;
-      --color-text-secondary: #6b7280;
-      --border-radius-md: 8px;
-      --border-radius-lg: 12px;
-    }
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --color-background-primary: #1a1a1a;
-        --color-background-secondary: #242424;
-        --color-border-tertiary: rgba(255, 255, 255, 0.08);
-        --color-border-secondary: rgba(255, 255, 255, 0.12);
-        --color-text-primary: #f0f0f0;
-        --color-text-secondary: #a0a0a0;
-      }
-      .badge-uyen { background: #1c3f5c; color: #bbd4f5; border-color: #2c5780; }
-      .badge-phuong { background: #1a4f42; color: #b2e0d2; border-color: #217a64; }
-      .badge-cat { background: #2d2d2d; color: #b0b0b0; border-color: #3f3f3f; }
-      .badge-priority-high { background: #421e1e; color: #f3b5b5; border-color: #832f2f; }
-      .badge-priority-med { background: #4a3516; color: #f8d99e; border-color: #a57228; }
-      .badge-priority-low { background: #1a3a1a; color: #b3dc8f; border-color: #3c7e1a; }
-    }
-    .wrap { max-width: 1280px; margin: 0 auto; }
-    .top-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 10px; margin-bottom: 1.5rem; }
-    .stat-card { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 0.75rem 1rem; border: 0.5px solid var(--color-border-tertiary); }
-    .stat-label { font-size: 11px; color: var(--color-text-secondary); margin-bottom: 4px; }
-    .stat-value { font-size: 22px; font-weight: 500; color: var(--color-text-primary); }
-    .stat-sub { font-size: 11px; color: var(--color-text-secondary); margin-top: 2px; }
-    .pbar-wrap { height: 4px; background: var(--color-background-secondary); border-radius: 2px; margin-top: 6px; overflow: hidden; border: 0.5px solid var(--color-border-secondary); }
-    .pbar-fill { height: 100%; border-radius: 2px; background: var(--accent-yen); transition: width 0.5s; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ListenMind · Project Tracker</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+:root {
+  --bg:#ffffff;--bg2:#f8fafc;--bg3:#f1f5f9;--text:#111827;--text2:#6b7280;--text3:#9ca3af;
+  --border:rgba(0,0,0,0.1);--border2:rgba(0,0,0,0.18);
+  --accent:#185FA5;--green:#0F6E56;
+  --green-bg:#E1F5EE;--green-text:#085041;
+  --blue-bg:#E6F1FB;--blue-text:#0C447C;
+  --warn-bg:#fef3c7;--warn-text:#78350f;
+  --danger:#dc2626;--danger-bg:#fee2e2;--danger-text:#7f1d1d;
+  --info-bg:#E6F1FB;--info-text:#0C447C;
+  --success-bg:#E1F5EE;--success-text:#085041;
+  --radius:8px;--radius-lg:12px;--font:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans',sans-serif;
+}
+@media(prefers-color-scheme:dark){
+  :root{
+    --bg:#1a1a1a;--bg2:#242424;--bg3:#2e2e2e;--text:#f0f0f0;--text2:#a0a0a0;--text3:#6b6b6b;
+    --border:rgba(255,255,255,0.1);--border2:rgba(255,255,255,0.2);
+    --green-bg:#052e16;--green-text:#86efac;
+    --blue-bg:#0f172a;--blue-text:#93c5fd;
+    --warn-bg:#1c1007;--warn-text:#fcd34d;
+    --danger-bg:#1f0707;--danger-text:#fca5a5;
+    --info-bg:#0f172a;--info-text:#93c5fd;
+    --success-bg:#052e16;--success-text:#86efac;
+  }
+  .badge-uyen{background:#1c3f5c;color:#bbd4f5;border-color:#2c5780}
+  .badge-phuong{background:#1a4f42;color:#b2e0d2;border-color:#217a64}
+  .badge-high{background:#421e1e;color:#f3b5b5;border-color:#832f2f}
+  .badge-med{background:#4a3516;color:#f8d99e;border-color:#a57228}
+  .badge-low{background:#1a3a1a;color:#b3dc8f;border-color:#3c7e1a}
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);background:var(--bg3);color:var(--text);min-height:100vh;padding:1.25rem}
+.app{max-width:1020px;margin:0 auto;background:var(--bg);border-radius:var(--radius-lg);border:0.5px solid var(--border);overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
 
-    .controls { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 1rem; align-items: center; }
-    .fbtn { font-size: 11px; padding: 4px 12px; border-radius: 20px; border: 0.5px solid var(--color-border-secondary); background: transparent; color: var(--color-text-secondary); cursor: pointer; transition: 0.15s; }
-    .fbtn.on { background: var(--color-text-primary); color: var(--color-background-primary); border-color: transparent; }
-    .spacer { flex: 1; }
-    .search-box { font-size: 12px; padding: 4px 10px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-secondary); background: var(--color-background-secondary); color: var(--color-text-primary); width: 170px; outline: none; }
-    .search-box:focus { border-color: var(--accent-yen); }
+/* HEADER */
+.header{padding:1.1rem 1.5rem;border-bottom:0.5px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:.75rem;flex-wrap:wrap}
+.title-wrap{display:flex;flex-direction:column;gap:3px}
+.title-main{font-size:16px;font-weight:500;display:flex;align-items:center;gap:7px}
+.title-sub{font-size:11px;color:var(--text2)}
+.hdr-actions{display:flex;gap:6px;flex-wrap:wrap}
 
-    .phase-block { border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); overflow: hidden; margin-bottom: 1rem; background: var(--color-background-primary); }
-    .phase-hdr { display: flex; align-items: center; gap: 10px; padding: 0.65rem 1rem; cursor: pointer; background: var(--color-background-secondary); }
-    .phase-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-    .phase-name { font-size: 13px; font-weight: 500; flex: 1; }
-    .phase-meta { font-size: 11px; color: var(--color-text-secondary); background: var(--color-background-secondary); padding: 2px 8px; border-radius: 20px; }
-    .phase-chevron { transition: transform 0.2s; }
-    .phase-block.collapsed .phase-chevron { transform: rotate(-90deg); }
-    .phase-block.collapsed .phase-body { display: none; }
-    .phase-body { border-top: 0.5px solid var(--color-border-tertiary); }
+/* BUTTONS */
+.btn{font-size:12px;padding:5px 11px;border-radius:var(--radius);border:0.5px solid var(--border2);background:transparent;color:var(--text2);cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:all .15s;font-family:var(--font);white-space:nowrap}
+.btn:hover{background:var(--bg2);color:var(--text)}
+.btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+.btn.primary:hover{opacity:.88}
+.btn.danger{background:var(--danger-bg);color:var(--danger);border-color:var(--danger)}
+.btn.sm{font-size:11px;padding:3px 8px}
 
-    .week-hdr { display: flex; align-items: center; gap: 8px; padding: 0.5rem 1rem; background: var(--color-background-secondary); border-bottom: 0.5px solid var(--color-border-tertiary); }
-    .week-label { font-size: 12px; font-weight: 500; flex: 1; }
-    .week-prog { font-size: 11px; color: var(--color-text-secondary); }
+/* STATS */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:7px;padding:.9rem 1.5rem;background:var(--bg2);border-bottom:0.5px solid var(--border)}
+.stat{background:var(--bg);border-radius:var(--radius);padding:.6rem .8rem;border:0.5px solid var(--border)}
+.stat-label{font-size:11px;color:var(--text2);margin-bottom:3px}
+.stat-value{font-size:19px;font-weight:500;line-height:1.2}
+.stat-sub{font-size:11px;color:var(--text3);margin-top:2px}
+.pbar{height:4px;background:var(--bg3);border-radius:2px;overflow:hidden;margin-top:5px}
+.pfill{height:100%;border-radius:2px;transition:width .5s ease}
 
-    .task-row { display: flex; align-items: flex-start; gap: 10px; padding: 0.55rem 1rem; border-bottom: 0.5px solid var(--color-border-tertiary); transition: background 0.1s; }
-    .task-row:hover { background: var(--color-background-secondary); }
-    .task-row.is-done .task-text { text-decoration: line-through; opacity: 0.7; }
+/* TABS */
+.tabs{display:flex;border-bottom:0.5px solid var(--border);padding:0 1.5rem;overflow-x:auto}
+.tab{padding:.6rem .9rem;font-size:13px;font-weight:500;cursor:pointer;border:none;background:transparent;color:var(--text2);border-bottom:2px solid transparent;white-space:nowrap;transition:all .15s;font-family:var(--font);display:flex;align-items:center;gap:5px}
+.tab:hover:not(.active){color:var(--text)}
+.tab.active{color:var(--text);border-bottom-color:var(--accent)}
 
-    .chk { width: 17px; height: 17px; border-radius: 50%; border: 1.5px solid var(--color-border-secondary); flex-shrink: 0; margin-top: 2px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 10px; }
-    .chk.done { background: var(--accent-phuong); border-color: var(--accent-phuong); color: #fff; }
-    .chk.inprog { background: var(--accent-yen); border-color: var(--accent-yen); color: #fff; }
-    .task-body { flex: 1; min-width: 0; }
-    .task-text { font-size: 13px; line-height: 1.45; cursor: pointer; border-radius: 6px; padding: 0 2px; display: inline-block; width: 100%; }
-    .task-text[contenteditable="true"] { background: var(--color-background-secondary); outline: none; border: 0.5px solid var(--color-border-secondary); padding: 2px 6px; cursor: text; }
-    .task-meta-row { display: flex; align-items: center; gap: 6px; margin-top: 5px; flex-wrap: wrap; }
-    .badge { font-size: 10px; padding: 2px 8px; border-radius: 10px; font-weight: 500; border: 0.5px solid transparent; cursor: pointer; transition: 0.1s; }
-    .badge-uyen { background: #E6F1FB; color: #0C447C; border-color: #B5D4F4; }
-    .badge-phuong { background: #E1F5EE; color: #085041; border-color: #9FE1CB; }
-    .badge-cat { background: var(--color-background-secondary); color: var(--color-text-secondary); border-color: var(--color-border-secondary); }
-    .badge-priority-high { background: #FCEBEB; color: #791F1F; border-color: #F7C1C1; }
-    .badge-priority-med { background: #FAEEDA; color: #633806; border-color: #FAC775; }
-    .badge-priority-low { background: #EAF3DE; color: #27500A; border-color: #C0DD97; }
-    .action-icons { display: flex; gap: 4px; opacity: 0; transition: opacity 0.15s; flex-shrink: 0; }
-    .task-row:hover .action-icons, .week-hdr:hover .action-icons, .phase-hdr:hover .action-icons { opacity: 1; }
-    .icon-btn { background: transparent; border: none; cursor: pointer; font-size: 14px; color: var(--color-text-secondary); padding: 2px; border-radius: 4px; display: inline-flex; align-items: center; }
-    .icon-btn:hover { background: var(--color-border-tertiary); color: var(--color-text-primary); }
-    .add-btn { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--color-text-secondary); padding: 0.6rem 1rem; border-top: 0.5px dashed var(--color-border-secondary); cursor: pointer; background: transparent; width: 100%; transition: 0.15s; }
-    .add-btn:hover { color: var(--accent-yen); background: #E6F1FB; }
-    .legend { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 1.25rem; padding: 0.65rem 1rem; background: var(--color-background-secondary); border-radius: var(--border-radius-md); font-size: 11px; align-items: center; }
-    .leg-item { display: flex; align-items: center; gap: 5px; color: var(--color-text-secondary); }
-    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000; }
-    .modal-card { background: var(--color-background-primary); border-radius: 16px; padding: 1.5rem; width: 300px; border: 1px solid var(--color-border-secondary); }
-    .color-swatch { width: 32px; height: 32px; border-radius: 50%; cursor: pointer; display: inline-block; margin: 4px; border: 2px solid transparent; }
-    .color-swatch.selected { border-color: white; outline: 2px solid var(--color-text-primary); }
-  </style>
+/* CONTENT */
+.content{padding:1rem 1.5rem 2rem}
+
+/* FILTER */
+.filter-row{display:flex;gap:5px;margin-bottom:.9rem;flex-wrap:wrap;align-items:center}
+.fbtn{font-size:11px;padding:3px 10px;border-radius:20px;border:0.5px solid var(--border2);background:transparent;color:var(--text2);cursor:pointer;transition:all .15s;font-family:var(--font)}
+.fbtn:hover{color:var(--text)}
+.fbtn.active{background:var(--text);color:var(--bg);border-color:transparent}
+.fbtn.phase{border-radius:var(--radius)}
+.spacer{flex:1}
+
+/* PHASE EDITOR */
+.phase-editor{margin-bottom:1.5rem;border:0.5px solid var(--border);border-radius:var(--radius-lg);overflow:hidden}
+.phase-header{display:flex;align-items:center;justify-content:space-between;padding:.6rem 1rem;gap:.5rem}
+.phase-title-input{font-size:14px;font-weight:500;border:none;background:transparent;color:inherit;flex:1;font-family:var(--font);outline:none;cursor:pointer}
+.phase-title-input:focus{background:rgba(255,255,255,0.15);border-radius:4px;padding:0 4px}
+.phase-actions{display:flex;gap:5px;align-items:center}
+
+/* WEEK */
+.week-wrap{border-top:0.5px solid var(--border)}
+.week-header{display:flex;align-items:center;justify-content:space-between;padding:.45rem .85rem;gap:.5rem}
+.week-header-left{display:flex;align-items:center;gap:.5rem;flex:1;min-width:0}
+.week-label-input{font-size:12px;font-weight:500;border:none;background:transparent;color:inherit;width:auto;max-width:260px;font-family:var(--font);outline:none;cursor:pointer}
+.week-label-input:focus{background:var(--bg2);border-radius:4px;padding:0 4px}
+.week-prog{font-size:11px;margin-left:.5rem;white-space:nowrap;color:var(--text2)}
+.week-actions{display:flex;gap:4px}
+.task-list{padding:.4rem .85rem .6rem}
+
+/* TASK */
+.task{display:flex;align-items:flex-start;gap:9px;padding:.55rem .7rem;background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius);margin-bottom:4px;transition:border-color .15s;position:relative}
+.task:hover{border-color:var(--border2)}
+.task.done{opacity:.58}
+.task.done .task-text-input{text-decoration:line-through;color:var(--text2)}
+.task.inprog{border-left:2px solid var(--accent)}
+.check{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--border2);flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;font-size:10px}
+.check.checked{background:var(--green);border-color:var(--green);color:#fff}
+.check.inp{background:var(--accent);border-color:var(--accent);color:#fff}
+.task-body{flex:1;min-width:0}
+.task-text-input{width:100%;font-size:13px;line-height:1.5;border:none;background:transparent;color:var(--text);font-family:var(--font);outline:none;resize:none;cursor:pointer;padding:0}
+.task-text-input:focus{cursor:text;background:var(--bg2);border-radius:4px;padding:2px 6px}
+.task-meta{display:flex;align-items:center;gap:5px;margin-top:4px;flex-wrap:wrap}
+.badge{font-size:10px;padding:2px 7px;border-radius:10px;font-weight:500;cursor:pointer;border:0.5px solid transparent}
+.badge-uyen{background:#E6F1FB;color:#0C447C;border-color:#B5D4F4}
+.badge-phuong{background:#E1F5EE;color:#085041;border-color:#9FE1CB}
+.badge-high{background:#FCEBEB;color:#791F1F;border-color:#F7C1C1}
+.badge-med{background:#FAEEDA;color:#633806;border-color:#FAC775}
+.badge-low{background:#EAF3DE;color:#27500A;border-color:#C0DD97}
+.cat-select{font-size:10px;padding:2px 4px;border-radius:10px;border:0.5px solid var(--border2);background:var(--bg2);color:var(--text2);cursor:pointer;font-family:var(--font)}
+.note-area{width:100%;font-size:12px;padding:.4rem .5rem;background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--radius);color:var(--text);margin-top:6px;resize:vertical;display:none;font-family:var(--font);min-height:54px;line-height:1.4}
+.note-area:focus{outline:none;border-color:var(--accent)}
+.task.expanded .note-area{display:block}
+.task-actions{display:flex;gap:3px;flex-shrink:0;opacity:0;transition:opacity .15s}
+.task:hover .task-actions{opacity:1}
+
+/* ADD BUTTONS */
+.add-task-btn{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text3);padding:.35rem .7rem;border:0.5px dashed var(--border2);border-radius:var(--radius);cursor:pointer;transition:all .15s;background:transparent;font-family:var(--font);width:100%;margin-top:2px}
+.add-task-btn:hover{color:var(--accent);border-color:var(--accent);background:var(--info-bg)}
+.add-week-btn{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text3);padding:.3rem .85rem;border-top:0.5px dashed var(--border2);cursor:pointer;transition:all .15s;background:transparent;font-family:var(--font);width:100%}
+.add-week-btn:hover{color:var(--accent);background:var(--info-bg)}
+.add-phase-btn{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text3);padding:.65rem 1rem;border:0.5px dashed var(--border2);border-radius:var(--radius-lg);cursor:pointer;transition:all .15s;background:transparent;font-family:var(--font);width:100%;margin-bottom:1rem;justify-content:center}
+.add-phase-btn:hover{color:var(--accent);border-color:var(--accent);background:var(--info-bg)}
+
+/* MILESTONES */
+.ms-item{display:flex;align-items:center;gap:9px;padding:.6rem .8rem;background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius);margin-bottom:4px}
+.ms-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.ms-label{flex:1;font-size:13px}
+.ms-label.achieved{text-decoration:line-through;color:var(--text2)}
+
+/* LOG */
+.log-item{padding:.5rem .8rem;border-left:2px solid var(--border2);margin-bottom:.3rem;border-radius:0 var(--radius) var(--radius) 0}
+.log-item:hover{border-left-color:var(--accent);background:var(--bg2)}
+.log-time{font-size:11px;color:var(--text3);margin-bottom:1px}
+.log-text{font-size:13px}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:1000;padding:1rem}
+.modal{background:var(--bg);border-radius:var(--radius-lg);border:0.5px solid var(--border2);padding:1.5rem;max-width:480px;width:100%;box-shadow:0 8px 40px rgba(0,0,0,.15)}
+.modal h3{font-size:15px;font-weight:500;margin-bottom:1rem}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:1.25rem}
+.modal label{font-size:12px;color:var(--text2);display:block;margin-bottom:4px;margin-top:.75rem}
+.modal input,.modal select,.modal textarea{width:100%;font-size:13px;padding:.45rem .65rem;background:var(--bg2);border:0.5px solid var(--border2);border-radius:var(--radius);color:var(--text);font-family:var(--font)}
+.modal input:focus,.modal select:focus,.modal textarea:focus{outline:none;border-color:var(--accent)}
+.color-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+.color-swatch{width:28px;height:28px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:all .15s}
+.color-swatch.selected{border-color:var(--text);transform:scale(1.15)}
+
+/* EMPTY */
+.empty{text-align:center;padding:2.5rem 1rem;color:var(--text2);font-size:13px}
+.empty i{font-size:28px;display:block;margin-bottom:.6rem;color:var(--text3)}
+
+/* FOOTER */
+.footer{padding:.6rem 1.5rem;border-top:0.5px solid var(--border);background:var(--bg2);font-size:11px;color:var(--text3);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:4px}
+
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+@media(max-width:600px){body{padding:.5rem}.stats{grid-template-columns:repeat(2,1fr)}.header{flex-direction:column;align-items:flex-start}}
+</style>
 </head>
 <body>
-<div class="wrap">
-  <div class="top-stats" id="stats-row"></div>
-  <div class="legend">
-    <div class="leg-item"><div class="leg-dot" style="width:10px;height:10px;border-radius:50%;background:#185FA5"></div> Phase 1</div>
-    <div class="leg-item"><div class="leg-dot" style="background:#0F6E56;width:10px;height:10px;border-radius:50%"></div> Phase 2</div>
-    <div class="leg-item"><div class="leg-dot" style="background:#BA7517"></div> Phase 3</div>
-    <div class="leg-item"><div class="leg-dot" style="background:#993C1D"></div> Phase 4</div>
-    <div class="leg-item"><div class="leg-dot" style="background:#534AB7"></div> Phase 5</div>
-    <div class="leg-item"><span class="badge badge-uyen">Uyên</span></div>
-    <div class="leg-item"><span class="badge badge-phuong">Phương</span></div>
-    <div class="leg-item"><button class="btn" style="font-size:11px;padding:2px 8px;" onclick="exportAllJSON()">📤 Xuất JSON</button></div>
-    <div class="leg-item"><button class="btn" style="font-size:11px;padding:2px 8px;" onclick="document.getElementById('importFile').click()">📥 Nhập JSON</button><input type="file" id="importFile" accept=".json" style="display:none" onchange="importJSONFile(this)"></div>
-    <div class="leg-item"><button class="btn" style="font-size:11px;padding:2px 8px;" onclick="if(confirm('Reset về roadmap gốc?')) resetToDefault()">⟳ Reset</button></div>
+<div class="app">
+
+  <div class="header">
+    <div class="title-wrap">
+      <span class="title-main">
+        <i class="ti ti-headphones" style="color:var(--accent);font-size:16px"></i>
+        ListenMind · Project Tracker
+      </span>
+      <span class="title-sub">Uyên (Frontend) · Phương (Backend) · Chỉnh sửa trực tiếp · Lưu tự động · Xuất/nhập JSON</span>
+    </div>
+    <div class="hdr-actions">
+      <button class="btn" onclick="importJSON()"><i class="ti ti-upload" style="font-size:12px"></i> Nhập JSON</button>
+      <button class="btn" onclick="exportJSON()"><i class="ti ti-download" style="font-size:12px"></i> Xuất JSON</button>
+      <button class="btn" onclick="exportTXT()"><i class="ti ti-file-text" style="font-size:12px"></i> Xuất TXT</button>
+      <button class="btn danger" onclick="resetAll()"><i class="ti ti-refresh" style="font-size:12px"></i> Reset</button>
+    </div>
   </div>
-  <div class="controls">
-    <button class="fbtn on" data-f="all" onclick="setGlobalFilter('all',this)">Tất cả</button>
-    <button class="fbtn" data-f="todo" onclick="setGlobalFilter('todo',this)">Chưa làm</button>
-    <button class="fbtn" data-f="inprog" onclick="setGlobalFilter('inprog',this)">Đang làm</button>
-    <button class="fbtn" data-f="done" onclick="setGlobalFilter('done',this)">Hoàn thành</button>
-    <button class="fbtn" data-f="uyen" onclick="setGlobalFilter('uyen',this)">Uyên</button>
-    <button class="fbtn" data-f="phuong" onclick="setGlobalFilter('phuong',this)">Phương</button>
-    <button class="fbtn" data-f="high" onclick="setGlobalFilter('high',this)">Ưu tiên cao</button>
-    <div class="spacer"></div>
-    <input class="search-box" type="text" id="searchInput" placeholder="🔍 Tìm task..." oninput="setSearch(this.value)">
-    <button class="fbtn" onclick="addNewPhase()" style="background:var(--accent-yen);color:white">+ Phase mới</button>
+
+  <div class="stats" id="stats"></div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('tasks',this)"><i class="ti ti-checklist" style="font-size:13px"></i> Công việc</button>
+    <button class="tab" onclick="switchTab('milestones',this)"><i class="ti ti-flag" style="font-size:13px"></i> Milestones</button>
+    <button class="tab" onclick="switchTab('log',this)"><i class="ti ti-history" style="font-size:13px"></i> Nhật ký</button>
+    <button class="tab" onclick="switchTab('io',this)"><i class="ti ti-settings" style="font-size:13px"></i> Cài đặt</button>
   </div>
-  <div id="phases-root"></div>
+
+  <div class="content" id="content"></div>
+
+  <div class="footer">
+    <span>Click ○ để đổi trạng thái · Double-click text để sửa · Hover để thấy nút ghi chú / xóa</span>
+    <span id="saved-at"></span>
+  </div>
 </div>
 
+<!-- MODAL -->
+<div class="modal-overlay" id="modal" style="display:none" onclick="if(event.target===this)closeModal()">
+  <div class="modal" id="modal-body"></div>
+</div>
+<input type="file" id="file-input" accept=".json" style="display:none" onchange="handleImport(event)">
+
 <script>
-  // ----- DEFAULT ROADMAP (giữ nguyên nội dung cũ) -----
-  const DEFAULT_PHASES = [
-    { id:"ph0", name:"Phase 1 — Foundation & Architecture", color:"#185FA5", weeks:[
-      { id:"w0_0", label:"Tuần 1–2: Tech Stack & Setup", tasks:[
-        { id:"t1", text:"Quyết định và setup tech stack: Next.js 14 (App Router) + TypeScript", who:"phuong", cat:"Setup", pri:"high", status:"todo" },
-        { id:"t2", text:"Lựa chọn và setup database: Supabase (Postgres + Auth + Storage)", who:"phuong", cat:"Setup", pri:"high", status:"todo" },
-        { id:"t3", text:"Thiết kế database schema tổng thể: users, lessons, progress, vocabulary, notes, targets", who:"phuong", cat:"Database", pri:"high", status:"todo" },
-        { id:"t4", text:"Setup monorepo structure, ESLint, Prettier, Husky", who:"phuong", cat:"DevOps", pri:"med", status:"todo" },
-        { id:"t5", text:"Setup design system: Tailwind config, shadcn/ui", who:"uyen", cat:"UI", pri:"high", status:"todo" },
-        { id:"t6", text:"Thiết kế wireframe tổng thể (Figma)", who:"uyen", cat:"Design", pri:"high", status:"todo" },
-        { id:"t7", text:"Setup CI/CD: GitHub Actions → Vercel + Supabase migrations", who:"phuong", cat:"DevOps", pri:"med", status:"todo" }
+const STORE = 'listenmind_tracker_v2';
+const COLORS = ['#185FA5','#0F6E56','#BA7517','#993C1D','#534AB7','#0891B2','#DC2626','#D97706'];
+const CAT_OPTS = ['UI','API','Auth','Database','Feature','Logic','Content','Infra','DevOps','AI','Setup','Design','Testing','Perf','Security','SEO','Launch','Integration','Onboarding','Layout'];
+const WHO_OPTS = ['uyen','phuong'];
+const PRI_OPTS = ['high','med','low'];
+
+function uid(){ return '_'+Math.random().toString(36).slice(2,9); }
+
+function defaultData(){
+  return {
+    phases:[
+      { id:'ph1', label:'Phase 1 — Foundation & Architecture', color:'#185FA5', weeks:[
+        { id:'ph1w1', label:'Tuần 1–2: Tech Stack & Setup', days:'Tuần 1–2', tasks:[
+          {id:'t101',text:'Quyết định và setup tech stack: Next.js 14 (App Router) + TypeScript',who:'phuong',cat:'Setup',pri:'high'},
+          {id:'t102',text:'Lựa chọn và setup database: Supabase (Postgres + Auth + Storage)',who:'phuong',cat:'Setup',pri:'high'},
+          {id:'t103',text:'Thiết kế database schema tổng thể: users, lessons, progress, vocabulary, notes, targets',who:'phuong',cat:'Database',pri:'high'},
+          {id:'t104',text:'Setup monorepo structure, ESLint, Prettier, Husky pre-commit hooks',who:'phuong',cat:'DevOps',pri:'med'},
+          {id:'t105',text:'Setup design system: Tailwind config, color tokens, typography scale, component library (shadcn/ui)',who:'uyen',cat:'UI',pri:'high'},
+          {id:'t106',text:'Thiết kế wireframe tổng thể toàn bộ luồng (Figma hoặc tài liệu)',who:'uyen',cat:'Design',pri:'high'},
+          {id:'t107',text:'Setup CI/CD: GitHub Actions → Vercel (Frontend) + Supabase migrations',who:'phuong',cat:'DevOps',pri:'med'},
+          {id:'t108',text:'Định nghĩa API contract (mock spec) để Uyên và Phương làm song song',who:'phuong',cat:'API',pri:'high'},
+        ]},
+        { id:'ph1w2', label:'Tuần 3–4: Auth & User Onboarding', days:'Tuần 3–4', tasks:[
+          {id:'t109',text:'Implement màn hình đăng ký (email/password) — UI đẹp, validation đầy đủ',who:'uyen',cat:'Auth',pri:'high'},
+          {id:'t110',text:'Implement màn hình đăng nhập (email/password)',who:'uyen',cat:'Auth',pri:'high'},
+          {id:'t111',text:'Tích hợp OAuth: Google Login (Supabase Auth)',who:'phuong',cat:'Auth',pri:'high'},
+          {id:'t112',text:'Tích hợp OAuth: Facebook Login (Supabase Auth)',who:'phuong',cat:'Auth',pri:'high'},
+          {id:'t113',text:'Xử lý tất cả auth edge cases: lỗi đăng nhập, tài khoản đã tồn tại, forgot password',who:'phuong',cat:'Auth',pri:'high'},
+          {id:'t114',text:'Thiết kế và implement modal chọn ngôn ngữ (Tiếng Nhật / Tiếng Trung) sau đăng nhập',who:'uyen',cat:'Onboarding',pri:'high'},
+          {id:'t115',text:'Logic phân nhánh sau chọn ngôn ngữ: JLPT / HSK / FreeStyle — lưu vào profile',who:'phuong',cat:'Onboarding',pri:'high'},
+          {id:'t116',text:'Logic điều hướng: user mới → modal chọn ngôn ngữ, user cũ → vào thẳng màn học',who:'phuong',cat:'Auth',pri:'high'},
+        ]},
       ]},
-      { id:"w0_1", label:"Tuần 3–4: Auth & User Onboarding", tasks:[
-        { id:"t8", text:"Implement màn hình đăng ký (email/password) — UI đẹp", who:"uyen", cat:"Auth", pri:"high", status:"todo" },
-        { id:"t9", text:"Implement màn hình đăng nhập", who:"uyen", cat:"Auth", pri:"high", status:"todo" },
-        { id:"t10", text:"Tích hợp OAuth: Google Login", who:"phuong", cat:"Auth", pri:"high", status:"todo" },
-        { id:"t11", text:"Tích hợp OAuth: Facebook Login", who:"phuong", cat:"Auth", pri:"high", status:"todo" },
-        { id:"t12", text:"Modal chọn ngôn ngữ (Nhật / Trung) sau đăng nhập", who:"uyen", cat:"Onboarding", pri:"high", status:"todo" },
-        { id:"t13", text:"Logic phân nhánh JLPT/HSK/FreeStyle vào profile", who:"phuong", cat:"Onboarding", pri:"high", status:"todo" }
-      ]}
-    ]},
-    { id:"ph1", name:"Phase 2 — Core Learning UI", color:"#0F6E56", weeks:[
-      { id:"w1_0", label:"Tuần 5–6: Layout & Navigation", tasks:[
-        { id:"t14", text:"Implement sidebar navigation: Học / Target / Sổ từ vựng / Lịch sử", who:"uyen", cat:"Layout", pri:"high", status:"todo" },
-        { id:"t15", text:"Avatar dropdown + profile settings", who:"uyen", cat:"Layout", pri:"high", status:"todo" },
-        { id:"t16", text:"API: GET /api/user/profile", who:"phuong", cat:"API", pri:"high", status:"todo" }
+      { id:'ph2', label:'Phase 2 — Core Learning UI', color:'#0F6E56', weeks:[
+        { id:'ph2w1', label:'Tuần 5–6: Layout & Navigation', days:'Tuần 5–6', tasks:[
+          {id:'t201',text:'Implement sidebar navigation mới: Học / Target / Sổ từ vựng / Lịch sử',who:'uyen',cat:'Layout',pri:'high'},
+          {id:'t202',text:'Avatar/Profile dropdown (góc dưới sidebar): Hồ sơ / Cài đặt / Đổi ngôn ngữ / Đăng xuất',who:'uyen',cat:'Layout',pri:'high'},
+          {id:'t203',text:'Responsive layout: sidebar collapsible trên mobile',who:'uyen',cat:'Layout',pri:'med'},
+          {id:'t204',text:'Dark mode toggle — persist preference vào DB',who:'uyen',cat:'UI',pri:'low'},
+          {id:'t205',text:'API: GET /api/user/profile — lấy thông tin ngôn ngữ, level, progress',who:'phuong',cat:'API',pri:'high'},
+          {id:'t206',text:'API: PATCH /api/user/profile — cập nhật ngôn ngữ, settings',who:'phuong',cat:'API',pri:'high'},
+          {id:'t207',text:'Middleware bảo vệ route: redirect về login nếu chưa auth',who:'phuong',cat:'Auth',pri:'high'},
+        ]},
+        { id:'ph2w2', label:'Tuần 7–8: Màn hình Học chính', days:'Tuần 7–8', tasks:[
+          {id:'t208',text:'UI màn hình Học: hiển thị level hiện tại, danh sách lesson theo level đã chọn',who:'uyen',cat:'UI',pri:'high'},
+          {id:'t209',text:'Component lesson card: badge trạng thái (chưa học / đang học / hoàn thành / cần làm lại)',who:'uyen',cat:'UI',pri:'high'},
+          {id:'t210',text:'Widget đếm ngược ngày thi (góc trên phải): ngày / giờ / phút, real-time',who:'uyen',cat:'Feature',pri:'high'},
+          {id:'t211',text:'Xoá tag ngôn ngữ khỏi màn hình học (người dùng đã chọn ngôn ngữ từ modal rồi)',who:'uyen',cat:'UI',pri:'med'},
+          {id:'t212',text:'API: GET /api/lessons?lang=ja&level=N3 — danh sách lesson theo ngôn ngữ và level',who:'phuong',cat:'API',pri:'high'},
+          {id:'t213',text:'API: GET /api/user/progress — trạng thái từng lesson của user hiện tại',who:'phuong',cat:'API',pri:'high'},
+          {id:'t214',text:'Seed data: tổ chức content structure JLPT N5→N1, HSK 1→6, FreeStyle',who:'phuong',cat:'Content',pri:'high'},
+        ]},
       ]},
-      { id:"w1_1", label:"Tuần 7–8: Màn hình Học chính", tasks:[
-        { id:"t17", text:"UI màn hình Học: level + danh sách lesson", who:"uyen", cat:"UI", pri:"high", status:"todo" },
-        { id:"t18", text:"Widget đếm ngược ngày thi", who:"uyen", cat:"UI", pri:"high", status:"todo" },
-        { id:"t19", text:"API: GET /api/lessons filter theo level", who:"phuong", cat:"API", pri:"high", status:"todo" }
-      ]}
-    ]},
-    { id:"ph2", name:"Phase 3 — Learning Experience", color:"#BA7517", weeks:[
-      { id:"w2_0", label:"Tuần 9–11: Giao diện luyện tập", tasks:[
-        { id:"t20", text:"UI luyện tập: audio player, câu hỏi, đáp án", who:"uyen", cat:"UI", pri:"high", status:"todo" },
-        { id:"t21", text:"Highlight từ vựng + popup thêm note", who:"uyen", cat:"Feature", pri:"high", status:"todo" },
-        { id:"t22", text:"API nộp bài và lưu kết quả", who:"phuong", cat:"API", pri:"high", status:"todo" }
-      ]}
-    ]},
-    { id:"ph3", name:"Phase 4 — Advanced Features", color:"#993C1D", weeks:[
-      { id:"w3_0", label:"Tuần 14–15: Vocabulary & Notes", tasks:[
-        { id:"t23", text:"UI Sổ từ vựng: danh sách, filter", who:"uyen", cat:"Feature", pri:"high", status:"todo" },
-        { id:"t24", text:"API lưu từ vựng từ script", who:"phuong", cat:"API", pri:"high", status:"todo" }
-      ]}
-    ]},
-    { id:"ph4", name:"Phase 5 — Polish, Testing & Launch", color:"#534AB7", weeks:[
-      { id:"w4_0", label:"Tuần 20–21: Content & QA", tasks:[
-        { id:"t25", text:"Nhập nội dung bài nghe JLPT / HSK", who:"uyen", cat:"Content", pri:"high", status:"todo" },
-        { id:"t26", text:"Unit tests cho API endpoints", who:"phuong", cat:"Testing", pri:"med", status:"todo" }
-      ]}
-    ]}
-  ];
+      { id:'ph3', label:'Phase 3 — Learning Experience', color:'#BA7517', weeks:[
+        { id:'ph3w1', label:'Tuần 9–11: Giao diện Luyện tập', days:'Tuần 9–11', tasks:[
+          {id:'t301',text:'UI luyện tập: audio player tùy chỉnh, hiển thị câu hỏi dạng multiple choice',who:'uyen',cat:'UI',pri:'high'},
+          {id:'t302',text:'Script viewer: hiển thị transcript sau khi làm xong, có thể cuộn theo audio',who:'uyen',cat:'UI',pri:'high'},
+          {id:'t303',text:'Hệ thống highlight từ vựng: chọn từ trong script → popup (lưu từ / ghi chú / xem nghĩa)',who:'uyen',cat:'Feature',pri:'high'},
+          {id:'t304',text:'Component ghi chú cá nhân (sticky note) trong từng bài nghe',who:'uyen',cat:'Feature',pri:'med'},
+          {id:'t305',text:'Component làm lại câu sai: hiển thị câu sai, cho chọn lại, so sánh đáp án',who:'uyen',cat:'Feature',pri:'high'},
+          {id:'t306',text:'Hiển thị giải thích đáp án (explanation field)',who:'uyen',cat:'Feature',pri:'med'},
+          {id:'t307',text:'API: GET /api/lessons/:id — audio URL, script, questions, vocabulary list',who:'phuong',cat:'API',pri:'high'},
+          {id:'t308',text:'API: POST /api/submissions — nộp bài, lưu kết quả, tính câu sai, update progress',who:'phuong',cat:'API',pri:'high'},
+          {id:'t309',text:'Supabase Storage: upload và serve file audio bài nghe',who:'phuong',cat:'Infra',pri:'high'},
+        ]},
+        { id:'ph3w2', label:'Tuần 12–13: Giao diện Thi thật', days:'Tuần 12–13', tasks:[
+          {id:'t310',text:'UI thi thật: layout giống đề thi JLPT/HSK, không hiển thị script trong lúc thi',who:'uyen',cat:'UI',pri:'high'},
+          {id:'t311',text:'Countdown timer: cảnh báo 5 phút cuối, tự nộp khi hết giờ',who:'uyen',cat:'Feature',pri:'high'},
+          {id:'t312',text:'Màn hình kết quả thi: điểm tổng, số câu đúng/sai, phần trăm, nhận xét tổng quát',who:'uyen',cat:'UI',pri:'high'},
+          {id:'t313',text:'Layout kết quả 2 cột: trái (audio + script + highlight từ vựng) / phải (câu sai + đáp án)',who:'uyen',cat:'UI',pri:'high'},
+          {id:'t314',text:'Click câu sai → auto scroll + highlight vị trí tương ứng trong script',who:'uyen',cat:'Feature',pri:'med'},
+          {id:'t315',text:'Đánh dấu câu cần ôn lại, làm lại riêng câu sai',who:'uyen',cat:'Feature',pri:'med'},
+          {id:'t316',text:'API: GET /api/exams/:id — đề thi format mẫu theo JLPT/HSK thật',who:'phuong',cat:'API',pri:'high'},
+          {id:'t317',text:'Logic chấm điểm, phân tích kết quả từng phần thi, lưu submission history',who:'phuong',cat:'Logic',pri:'high'},
+        ]},
+      ]},
+      { id:'ph4', label:'Phase 4 — Advanced Features', color:'#993C1D', weeks:[
+        { id:'ph4w1', label:'Tuần 14–15: Sổ Từ vựng', days:'Tuần 14–15', tasks:[
+          {id:'t401',text:'UI Sổ từ vựng: danh sách, tìm kiếm, filter theo ngôn ngữ / level / lesson / trạng thái',who:'uyen',cat:'Feature',pri:'high'},
+          {id:'t402',text:'Vocabulary card: từ / cách đọc / nghĩa / ví dụ / ghi chú / trạng thái học',who:'uyen',cat:'UI',pri:'high'},
+          {id:'t403',text:'Chế độ flashcard ôn tập từ vựng, cập nhật trạng thái đã thuộc / cần ôn',who:'uyen',cat:'Feature',pri:'med'},
+          {id:'t404',text:'API: POST /api/vocabulary — lưu từ mới từ script kèm context',who:'phuong',cat:'API',pri:'high'},
+          {id:'t405',text:'API: GET /api/vocabulary — danh sách từ của user với đầy đủ filter',who:'phuong',cat:'API',pri:'high'},
+          {id:'t406',text:'API: PATCH /api/vocabulary/:id — cập nhật trạng thái học, ghi chú cá nhân',who:'phuong',cat:'API',pri:'high'},
+          {id:'t407',text:'Tích hợp từ điển API: Jotoba (tiếng Nhật) / CC-CEDICT (tiếng Trung) — xem nghĩa nhanh',who:'phuong',cat:'Integration',pri:'med'},
+        ]},
+        { id:'ph4w2', label:'Tuần 16–17: Target & AI Planning', days:'Tuần 16–17', tasks:[
+          {id:'t408',text:'UI màn hình Target: thiết lập mục tiêu (ngôn ngữ, level hiện tại, level mục tiêu, ngày thi)',who:'uyen',cat:'UI',pri:'high'},
+          {id:'t409',text:'UI lịch thi: thêm kỳ thi (tên / ngày / giờ / địa điểm / ghi chú), hiển thị đếm ngược',who:'uyen',cat:'UI',pri:'high'},
+          {id:'t410',text:'Biểu đồ học tập: streak chart, số ngày học/tuần, số bài hoàn thành (recharts)',who:'uyen',cat:'UI',pri:'med'},
+          {id:'t411',text:'Dashboard thống kê tuần: tổng bài làm, tỷ lệ chính xác, so sánh với target',who:'uyen',cat:'UI',pri:'med'},
+          {id:'t412',text:'Tích hợp AI (Claude API): tự động tạo kế hoạch học dựa trên level, ngày thi, tần suất',who:'phuong',cat:'AI',pri:'high'},
+          {id:'t413',text:'Logic cảnh báo: tiến độ không đủ để đạt target → gợi ý điều chỉnh kế hoạch',who:'phuong',cat:'Logic',pri:'med'},
+          {id:'t414',text:'API: GET/POST /api/targets — lưu và lấy mục tiêu học của user',who:'phuong',cat:'API',pri:'high'},
+          {id:'t415',text:'API: GET /api/stats — streak, tổng giờ học, accuracy rate, progress tổng hợp',who:'phuong',cat:'API',pri:'high'},
+        ]},
+        { id:'ph4w3', label:'Tuần 18–19: Lịch sử & Profile', days:'Tuần 18–19', tasks:[
+          {id:'t416',text:'UI Lịch sử học tập: danh sách bài đã làm, kết quả, phân trang, filter đa chiều',who:'uyen',cat:'UI',pri:'med'},
+          {id:'t417',text:'UI Settings / Hồ sơ: thông tin tài khoản, ngôn ngữ giao diện, thông báo',who:'uyen',cat:'UI',pri:'med'},
+          {id:'t418',text:'Quản lý tài khoản liên kết: Facebook / Gmail (link / unlink)',who:'uyen',cat:'UI',pri:'low'},
+          {id:'t419',text:'API: GET /api/history — lịch sử bài đã học, phân trang cursor-based, filter',who:'phuong',cat:'API',pri:'med'},
+          {id:'t420',text:'Logic review câu sai: auto gom câu sai vào queue "Cần ôn lại" sau mỗi bài',who:'phuong',cat:'Logic',pri:'high'},
+          {id:'t421',text:'Push notification / in-app reminder: nhắc học đúng giờ theo lịch target',who:'phuong',cat:'Feature',pri:'low'},
+        ]},
+      ]},
+      { id:'ph5', label:'Phase 5 — Polish, Testing & Launch', color:'#534AB7', weeks:[
+        { id:'ph5w1', label:'Tuần 20–21: Content & QA', days:'Tuần 20–21', tasks:[
+          {id:'t501',text:'Chuẩn hóa và nhập toàn bộ nội dung bài nghe JLPT hiện có vào DB',who:'uyen',cat:'Content',pri:'high'},
+          {id:'t502',text:'Chuẩn hóa và nhập toàn bộ nội dung bài nghe HSK hiện có vào DB',who:'uyen',cat:'Content',pri:'high'},
+          {id:'t503',text:'Định nghĩa JSON schema chuẩn cho lesson content (audio / script / questions / vocabulary)',who:'phuong',cat:'Content',pri:'high'},
+          {id:'t504',text:'Viết unit test cho core API: auth, submissions, vocabulary, targets',who:'phuong',cat:'Testing',pri:'med'},
+          {id:'t505',text:'End-to-end test toàn luồng: đăng ký → chọn ngôn ngữ → học → nộp bài → kết quả',who:'uyen',cat:'Testing',pri:'high'},
+          {id:'t506',text:'Cross-browser testing (Chrome, Safari, Firefox) + mobile responsive testing',who:'uyen',cat:'Testing',pri:'med'},
+        ]},
+        { id:'ph5w2', label:'Tuần 22–24: Performance & Launch', days:'Tuần 22–24', tasks:[
+          {id:'t507',text:'Performance: lazy loading audio, image optimization, code splitting Next.js',who:'uyen',cat:'Perf',pri:'med'},
+          {id:'t508',text:'SEO cơ bản: meta tags, OpenGraph, robots.txt, sitemap.xml',who:'uyen',cat:'SEO',pri:'low'},
+          {id:'t509',text:'Setup monitoring: Sentry (error tracking) + Vercel Analytics',who:'phuong',cat:'Infra',pri:'med'},
+          {id:'t510',text:'Database: indexing tối ưu, review query performance, tránh N+1 queries',who:'phuong',cat:'Perf',pri:'med'},
+          {id:'t511',text:'Security: Row Level Security (RLS) Supabase cho tất cả tables, audit toàn diện',who:'phuong',cat:'Security',pri:'high'},
+          {id:'t512',text:'Setup domain, SSL cert, cấu hình production environment variables',who:'phuong',cat:'DevOps',pri:'high'},
+          {id:'t513',text:'User Acceptance Testing với 5–10 beta users thật, thu thập feedback',who:'uyen',cat:'Testing',pri:'high'},
+          {id:'t514',text:'Fix bug từ beta feedback, release v1.0, announce',who:'phuong',cat:'Launch',pri:'high'},
+        ]},
+      ]},
+    ],
+    status:{}, notes:{}, log:[]
+  };
+}
 
-  let phasesData = [];
-  let filterMode = "all";
-  let searchText = "";
-  const STORAGE_KEY = "listenmind_editable_tracker";
+let D = defaultData();
+let activeTab = 'tasks';
+let activePhase = 'all';
+let activeFilter = 'all';
 
-  function loadData() {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if(saved) {
-      try {
-        phasesData = JSON.parse(saved);
-        return;
-      } catch(e) {}
-    }
-    phasesData = JSON.parse(JSON.stringify(DEFAULT_PHASES));
-    // đảm bảo mỗi task có status field
-    for(let p of phasesData) {
-      if(!p.color) p.color = p.id === "ph0" ? "#185FA5" : p.id === "ph1" ? "#0F6E56" : p.id === "ph2" ? "#BA7517" : p.id === "ph3" ? "#993C1D" : "#534AB7";
-      for(let w of p.weeks) {
-        if(!w.id) w.id = crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36);
-        for(let t of w.tasks) {
-          if(!t.status) t.status = "todo";
-          if(!t.id) t.id = crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36);
-        }
-      }
-    }
-  }
-  function saveToLocal() { localStorage.setItem(STORAGE_KEY, JSON.stringify(phasesData)); }
+function load(){
+  try{
+    const raw=localStorage.getItem(STORE);
+    if(raw){ const d=JSON.parse(raw); if(d.phases){ D=d; } }
+  }catch(e){}
+}
 
-  function getTaskStatus(task) { return task.status || "todo"; }
-  function setTaskStatus(task, st) { task.status = st; saveToLocal(); renderAll(); }
+function save(){
+  try{
+    localStorage.setItem(STORE,JSON.stringify(D));
+    const el=document.getElementById('saved-at');
+    if(el) el.textContent='Lưu lúc '+new Date().toLocaleTimeString('vi-VN');
+  }catch(e){}
+}
 
-  function toggleStatus(task) {
-    const cur = getTaskStatus(task);
-    if(cur === "todo") task.status = "inprog";
-    else if(cur === "inprog") task.status = "done";
-    else task.status = "todo";
-    saveToLocal();
-    renderAll();
-  }
+function allTasks(){ return D.phases.flatMap(p=>p.weeks.flatMap(w=>w.tasks)); }
+function taskStatus(id){ return D.status[id]||'todo'; }
 
-  function allTasksFlat() { return phasesData.flatMap(p => p.weeks.flatMap(w => w.tasks)); }
-  function renderStats() {
-    const all = allTasksFlat();
-    const done = all.filter(t => t.status === "done").length;
-    const inprog = all.filter(t => t.status === "inprog").length;
-    const pct = all.length ? Math.round(done/all.length*100) : 0;
-    const uyenCnt = all.filter(t => t.who === "uyen").length;
-    const phuongCnt = all.filter(t => t.who === "phuong").length;
-    document.getElementById("stats-row").innerHTML = `
-      <div class="stat-card"><div class="stat-label">Tổng tasks</div><div class="stat-value">${all.length}</div><div class="stat-sub">${phasesData.length} phases</div></div>
-      <div class="stat-card"><div class="stat-label">Hoàn thành</div><div class="stat-value">${done}</div><div class="stat-sub">${pct}%</div><div class="pbar-wrap"><div class="pbar-fill" style="width:${pct}%"></div></div></div>
-      <div class="stat-card"><div class="stat-label">Đang làm</div><div class="stat-value">${inprog}</div></div>
-      <div class="stat-card"><div class="stat-label">Uyên</div><div class="stat-value">${uyenCnt}</div></div>
-      <div class="stat-card"><div class="stat-label">Phương</div><div class="stat-value">${phuongCnt}</div></div>
-    `;
-  }
+function cycleStatus(id){
+  const cur=taskStatus(id);
+  const next=cur==='todo'?'inprog':cur==='inprog'?'done':'todo';
+  D.status[id]=next;
+  const task=allTasks().find(t=>t.id===id);
+  const label=next==='done'?'✓ Hoàn thành':next==='inprog'?'▶ Đang làm':'↩ Đặt lại';
+  D.log.unshift({time:new Date().toLocaleString('vi-VN'),action:label,task:(task?.text||'').slice(0,70)});
+  if(D.log.length>300) D.log.pop();
+  save(); renderAll();
+}
 
-  function taskMatchesFilter(t) {
-    if(filterMode === "uyen" && t.who !== "uyen") return false;
-    if(filterMode === "phuong" && t.who !== "phuong") return false;
-    if(filterMode === "done" && t.status !== "done") return false;
-    if(filterMode === "inprog" && t.status !== "inprog") return false;
-    if(filterMode === "todo" && t.status !== "todo") return false;
-    if(filterMode === "high" && t.pri !== "high") return false;
-    if(searchText && !t.text.toLowerCase().includes(searchText)) return false;
-    return true;
-  }
+// ─── STATS ───────────────────────────────────────────────────
+function renderStats(){
+  const all=allTasks();
+  const done=all.filter(t=>D.status[t.id]==='done').length;
+  const inp=all.filter(t=>D.status[t.id]==='inprog').length;
+  const pct=all.length?Math.round(done/all.length*100):0;
+  const uyenAll=all.filter(t=>t.who==='uyen');
+  const phuongAll=all.filter(t=>t.who==='phuong');
+  const uyenDone=uyenAll.filter(t=>D.status[t.id]==='done').length;
+  const phuongDone=phuongAll.filter(t=>D.status[t.id]==='done').length;
+  let h=`
+    <div class="stat">
+      <div class="stat-label">Tổng tiến độ</div>
+      <div class="stat-value">${pct}%</div>
+      <div class="stat-sub">${done}/${all.length} task</div>
+      <div class="pbar"><div class="pfill" style="width:${pct}%;background:var(--accent)"></div></div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Hoàn thành</div>
+      <div class="stat-value" style="color:#0F6E56">${done}</div>
+      <div class="stat-sub">${inp} đang làm · ${all.length-done-inp} chờ</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Uyên (FE)</div>
+      <div class="stat-value" style="color:#185FA5">${uyenDone}<span style="font-size:13px;color:var(--text3)">/${uyenAll.length}</span></div>
+      <div class="pbar"><div class="pfill" style="width:${uyenAll.length?Math.round(uyenDone/uyenAll.length*100):0}%;background:#185FA5"></div></div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Phương (BE)</div>
+      <div class="stat-value" style="color:#0F6E56">${phuongDone}<span style="font-size:13px;color:var(--text3)">/${phuongAll.length}</span></div>
+      <div class="pbar"><div class="pfill" style="width:${phuongAll.length?Math.round(phuongDone/phuongAll.length*100):0}%;background:#0F6E56"></div></div>
+    </div>`;
+  D.phases.forEach(p=>{
+    const pt=p.weeks.flatMap(w=>w.tasks);
+    const pd=pt.filter(t=>D.status[t.id]==='done').length;
+    const pp=pt.length?Math.round(pd/pt.length*100):0;
+    const shortName=p.label.replace(/Phase \d+ — /,'');
+    h+=`<div class="stat">
+      <div class="stat-label" style="font-size:10px">${shortName}</div>
+      <div class="stat-value" style="font-size:16px;color:${p.color}">${pd}<span style="font-size:12px;color:var(--text3)">/${pt.length}</span></div>
+      <div class="pbar"><div class="pfill" style="width:${pp}%;background:${p.color}"></div></div>
+    </div>`;
+  });
+  document.getElementById('stats').innerHTML=h;
+}
 
-  function renderAll() {
-    renderStats();
-    const root = document.getElementById("phases-root");
-    root.innerHTML = "";
-    phasesData.forEach((phase, pIdx) => {
-      const phaseDiv = document.createElement("div");
-      phaseDiv.className = "phase-block";
-      const totalPhaseTasks = phase.weeks.flatMap(w=>w.tasks);
-      const donePhase = totalPhaseTasks.filter(t=>t.status==="done").length;
-      const pctPhase = totalPhaseTasks.length ? Math.round(donePhase/totalPhaseTasks.length*100) : 0;
-      phaseDiv.innerHTML = `
-        <div class="phase-hdr" onclick="togglePhaseCollapse(this.parentElement)">
-          <div class="phase-dot" style="background:${phase.color}"></div>
-          <span class="phase-name" contenteditable="true" onblur="editPhaseName(${pIdx}, this.innerText)">${escapeHtml(phase.name)}</span>
-          <span class="phase-meta">${donePhase}/${totalPhaseTasks.length} — ${pctPhase}%</span>
-          <div class="action-icons" style="display:flex;gap:4px;margin-left:auto">
-            <button class="icon-btn" onclick="event.stopPropagation();openColorModal(${pIdx})" title="Đổi màu">🎨</button>
-            <button class="icon-btn" onclick="event.stopPropagation();deletePhase(${pIdx})" title="Xóa phase">🗑️</button>
-          </div>
-          <i class="ti ti-chevron-down phase-chevron"></i>
+// ─── TASKS TAB ───────────────────────────────────────────────
+function renderTasks(){
+  const c=document.getElementById('content');
+  let h=`<div class="filter-row">
+    <button class="fbtn phase${activePhase==='all'?' active':''}" onclick="setPhase('all')">Tất cả phase</button>`;
+  D.phases.forEach(p=>{
+    const act=activePhase===p.id;
+    const shortName='P'+(D.phases.indexOf(p)+1);
+    h+=`<button class="fbtn phase${act?' active':''}" style="${act?`background:${p.color};color:#fff;border-color:${p.color}`:''}" onclick="setPhase('${p.id}')">${shortName}</button>`;
+  });
+  h+=`<div class="spacer"></div>`;
+  [['all','Tất cả'],['todo','Chưa làm'],['inprog','Đang làm'],['done','Xong'],['uyen','Uyên'],['phuong','Phương'],['high','Ưu tiên cao']].forEach(([f,l])=>{
+    h+=`<button class="fbtn${activeFilter===f?' active':''}" onclick="setFilter('${f}')">${l}</button>`;
+  });
+  h+=`<input type="text" id="search-input" value="${esc(searchQ||'')}" placeholder="Tìm task..." oninput="doSearch(this.value)" style="font-size:11px;padding:3px 10px;border-radius:20px;border:0.5px solid var(--border2);background:var(--bg2);color:var(--text);outline:none;width:150px;font-family:var(--font)">`;
+  h+=`</div>`;
+
+  const phases=activePhase==='all'?D.phases:D.phases.filter(p=>p.id===activePhase);
+
+  phases.forEach(phase=>{
+    const allPhT=phase.weeks.flatMap(w=>w.tasks);
+    const donePhT=allPhT.filter(t=>D.status[t.id]==='done').length;
+    const pct=allPhT.length?Math.round(donePhT/allPhT.length*100):0;
+    h+=`<div class="phase-editor">
+      <div class="phase-header" style="background:${phase.color}18">
+        <input class="phase-title-input" style="color:${phase.color}" value="${esc(phase.label)}"
+          onchange="editPhaseLabel('${phase.id}',this.value)" title="Click để sửa tên phase">
+        <span style="font-size:11px;color:var(--text3)">${donePhT}/${allPhT.length} — ${pct}%</span>
+        <div class="phase-actions">
+          <button class="btn sm" style="color:${phase.color};border-color:${phase.color}" onclick="showPhaseModal('${phase.id}')"><i class="ti ti-palette" style="font-size:11px"></i> Màu</button>
+          <button class="btn sm danger" onclick="deletePhase('${phase.id}')"><i class="ti ti-trash" style="font-size:11px"></i></button>
+          <button class="btn sm primary" onclick="addPhase('after','${phase.id}')"><i class="ti ti-plus" style="font-size:11px"></i> Phase</button>
         </div>
-        <div class="phase-body" id="phaseBody-${pIdx}"></div>
-      `;
-      root.appendChild(phaseDiv);
-      const bodyDiv = phaseDiv.querySelector(`.phase-body`);
-      let anyVisible = false;
-      phase.weeks.forEach((week, wIdx) => {
-        const filteredTasks = week.tasks.filter(taskMatchesFilter);
-        if(filteredTasks.length === 0 && (filterMode !== "all" || searchText)) return;
-        anyVisible = true;
-        const weekDiv = document.createElement("div");
-        weekDiv.className = "week-hdr";
-        weekDiv.innerHTML = `
-          <span class="week-label" contenteditable="true" onblur="editWeekName(${pIdx},${wIdx},this.innerText)">${escapeHtml(week.label)}</span>
-          <span class="week-prog">${week.tasks.filter(t=>t.status==="done").length}/${week.tasks.length}</span>
-          <div class="action-icons">
-            <button class="icon-btn" onclick="addTaskToWeek(${pIdx},${wIdx})" title="Thêm task">➕</button>
-            <button class="icon-btn" onclick="deleteWeek(${pIdx},${wIdx})" title="Xóa tuần">🗑️</button>
-          </div>
-        `;
-        bodyDiv.appendChild(weekDiv);
-        week.tasks.forEach((task, tIdx) => {
-          if(!taskMatchesFilter(task)) return;
-          const isDone = task.status === "done";
-          const statusClass = task.status === "done" ? "done" : (task.status === "inprog" ? "inprog" : "");
-          const taskRow = document.createElement("div");
-          taskRow.className = `task-row ${isDone ? "is-done" : ""}`;
-          taskRow.innerHTML = `
-            <div class="chk ${statusClass}" onclick="toggleTaskStatus(${pIdx},${wIdx},${tIdx})">${task.status === "done" ? "✓" : task.status === "inprog" ? "▶" : ""}</div>
-            <div class="task-body">
-              <div class="task-text" contenteditable="true" onblur="editTaskText(${pIdx},${wIdx},${tIdx}, this.innerText)">${escapeHtml(task.text)}</div>
-              <div class="task-meta-row">
-                <span class="badge ${task.who === 'uyen' ? 'badge-uyen' : 'badge-phuong'}" onclick="cycleWho(${pIdx},${wIdx},${tIdx})">${task.who === 'uyen' ? 'Uyên' : 'Phương'}</span>
-                <span class="badge badge-cat" onclick="cycleCat(${pIdx},${wIdx},${tIdx})">${escapeHtml(task.cat)}</span>
-                <span class="badge ${task.pri === 'high' ? 'badge-priority-high' : task.pri === 'med' ? 'badge-priority-med' : 'badge-priority-low'}" onclick="cyclePriority(${pIdx},${wIdx},${tIdx})">${task.pri === 'high' ? 'Cao' : task.pri === 'med' ? 'Trung' : 'Thấp'}</span>
-              </div>
-            </div>
-            <div class="action-icons"><button class="icon-btn" onclick="deleteTask(${pIdx},${wIdx},${tIdx})" title="Xóa task">✖️</button></div>
-          `;
-          bodyDiv.appendChild(taskRow);
-        });
-        // nút thêm task cuối tuần
-        const addTaskBtn = document.createElement("button");
-        addTaskBtn.className = "add-btn";
-        addTaskBtn.innerHTML = `<i class="ti ti-plus"></i> Thêm task vào tuần này`;
-        addTaskBtn.onclick = () => addTaskToWeek(pIdx, wIdx);
-        bodyDiv.appendChild(addTaskBtn);
-      });
-      if(!anyVisible && (filterMode !== "all" || searchText)) {
-        bodyDiv.innerHTML = `<div class="empty-msg">🔍 Không có task nào khớp bộ lọc</div>`;
-      }
-      const addWeekBtn = document.createElement("button");
-      addWeekBtn.className = "add-btn";
-      addWeekBtn.innerHTML = `<i class="ti ti-plus"></i> + Thêm tuần vào phase này`;
-      addWeekBtn.onclick = () => addWeekToPhase(pIdx);
-      bodyDiv.appendChild(addWeekBtn);
-    });
-    const globalAddPhase = document.createElement("button");
-    globalAddPhase.className = "add-btn";
-    globalAddPhase.style.marginTop = "8px";
-    globalAddPhase.innerHTML = `<i class="ti ti-plus"></i> + Thêm phase mới (toàn bộ)`;
-    globalAddPhase.onclick = () => addNewPhase();
-    root.appendChild(globalAddPhase);
-  }
+      </div>`;
 
-  // Helper edit / delete / add
-  window.togglePhaseCollapse = (el) => el.classList.toggle("collapsed");
-  window.toggleTaskStatus = (p,w,t) => { toggleStatus(phasesData[p].weeks[w].tasks[t]); };
-  window.editTaskText = (p,w,t,val) => { phasesData[p].weeks[w].tasks[t].text = val; saveToLocal(); renderAll(); };
-  window.editPhaseName = (idx,val) => { phasesData[idx].name = val; saveToLocal(); renderAll(); };
-  window.editWeekName = (p,w,val) => { phasesData[p].weeks[w].label = val; saveToLocal(); renderAll(); };
-  window.deleteTask = (p,w,t) => { phasesData[p].weeks[w].tasks.splice(t,1); saveToLocal(); renderAll(); };
-  window.deleteWeek = (p,w) => { phasesData[p].weeks.splice(w,1); saveToLocal(); renderAll(); };
-  window.deletePhase = (idx) => { if(confirm("Xóa phase này?")) { phasesData.splice(idx,1); saveToLocal(); renderAll(); } };
-  window.addTaskToWeek = (p,w) => { phasesData[p].weeks[w].tasks.push({ id: crypto.randomUUID?.()||Date.now(), text:"Task mới", who:"uyen", cat:"Code", pri:"med", status:"todo" }); saveToLocal(); renderAll(); };
-  window.addWeekToPhase = (p) => { phasesData[p].weeks.push({ id: crypto.randomUUID?.()||Date.now(), label:"Tuần mới", tasks:[] }); saveToLocal(); renderAll(); };
-  window.addNewPhase = () => { phasesData.push({ id:"ph"+Date.now(), name:"Phase mới", color:"#0891B2", weeks:[{ id:"w"+Date.now(), label:"Tuần 1", tasks:[] }] }); saveToLocal(); renderAll(); };
-  window.cycleWho = (p,w,t) => { let task = phasesData[p].weeks[w].tasks[t]; task.who = task.who === "uyen" ? "phuong" : "uyen"; saveToLocal(); renderAll(); };
-  window.cycleCat = (p,w,t) => { let cats = ["Code","UI","API","Database","DevOps","Auth","Content","Testing","Feature"]; let task = phasesData[p].weeks[w].tasks[t]; let idx = cats.indexOf(task.cat); if(idx===-1) idx=0; task.cat = cats[(idx+1)%cats.length]; saveToLocal(); renderAll(); };
-  window.cyclePriority = (p,w,t) => { let prios = ["low","med","high"]; let task = phasesData[p].weeks[w].tasks[t]; let idx = prios.indexOf(task.pri); task.pri = prios[(idx+1)%3]; saveToLocal(); renderAll(); };
-  window.openColorModal = (phaseIdx) => { const colors = ["#185FA5","#0F6E56","#BA7517","#993C1D","#534AB7","#0891B2","#D97706"]; const modal = document.createElement("div"); modal.className = "modal-overlay"; modal.innerHTML = `<div class="modal-card"><h4>Chọn màu phase</h4><div id="colorOpts"></div><button onclick="this.closest('.modal-overlay').remove()">Đóng</button></div>`; document.body.appendChild(modal); const cont = modal.querySelector("#colorOpts"); colors.forEach(c=>{ let sw = document.createElement("div"); sw.style.background=c; sw.className="color-swatch"; sw.onclick=()=>{ phasesData[phaseIdx].color=c; saveToLocal(); renderAll(); modal.remove(); }; cont.appendChild(sw); }); };
-  window.setGlobalFilter = (mode,btn) => { filterMode = mode; document.querySelectorAll(".fbtn").forEach(b=>b.classList.remove("on")); btn.classList.add("on"); renderAll(); };
-  window.setSearch = (val) => { searchText = val.toLowerCase(); renderAll(); };
-  window.exportAllJSON = () => { const blob = new Blob([JSON.stringify(phasesData,null,2)], {type:"application/json"}); const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = `listenmind_backup_${new Date().toISOString().slice(0,10)}.json`; a.click(); };
-  window.importJSONFile = (input) => { const file = input.files[0]; if(!file) return; const reader = new FileReader(); reader.onload = (e) => { try{ const imported = JSON.parse(e.target.result); if(Array.isArray(imported)) { phasesData = imported; saveToLocal(); renderAll(); alert("Nhập thành công!"); } else alert("File không hợp lệ"); } catch(err){ alert("Lỗi JSON"); } }; reader.readAsText(file); input.value=""; };
-  window.resetToDefault = () => { phasesData = JSON.parse(JSON.stringify(DEFAULT_PHASES)); saveToLocal(); renderAll(); };
-  function escapeHtml(str) { return String(str || "").replace(/[&<>]/g, function(m){ if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
-  loadData(); renderAll();
+    phase.weeks.forEach(week=>{
+      const filtered=week.tasks.filter(t=>{
+        const ts=taskStatus(t.id);
+        if(activeFilter==='uyen'&&t.who!=='uyen') return false;
+        if(activeFilter==='phuong'&&t.who!=='phuong') return false;
+        if(activeFilter==='done'&&ts!=='done') return false;
+        if(activeFilter==='inprog'&&ts!=='inprog') return false;
+        if(activeFilter==='todo'&&ts!=='todo') return false;
+        if(activeFilter==='high'&&t.pri!=='high') return false;
+        if(searchQ&&!t.text.toLowerCase().includes(searchQ)) return false;
+        return true;
+      });
+      const wdone=week.tasks.filter(t=>D.status[t.id]==='done').length;
+      const wpct=week.tasks.length?Math.round(wdone/week.tasks.length*100):0;
+
+      h+=`<div class="week-wrap">
+        <div class="week-header">
+          <div class="week-header-left">
+            <input class="week-label-input" style="color:${phase.color}" value="${esc(week.label)}"
+              onchange="editWeekLabel('${phase.id}','${week.id}',this.value)" title="Sửa tên tuần">
+            <span class="week-prog">${wdone}/${week.tasks.length} · ${wpct}%</span>
+          </div>
+          <div class="week-actions">
+            <button class="btn sm" onclick="addWeekToPhase('${phase.id}')"><i class="ti ti-plus" style="font-size:11px"></i> Tuần</button>
+            <button class="btn sm danger" onclick="deleteWeek('${phase.id}','${week.id}')"><i class="ti ti-trash" style="font-size:11px"></i></button>
+          </div>
+        </div>
+        <div class="task-list" id="tl_${week.id}">`;
+
+      if(!filtered.length&&activeFilter!=='all'||!filtered.length&&searchQ){
+        h+=`<div style="font-size:12px;color:var(--text3);padding:.3rem 0">Không có task nào phù hợp bộ lọc.</div>`;
+      }
+
+      week.tasks.forEach((t,tIdx)=>{
+        if(activeFilter==='uyen'&&t.who!=='uyen') return;
+        if(activeFilter==='phuong'&&t.who!=='phuong') return;
+        const ts=taskStatus(t.id);
+        if(activeFilter==='done'&&ts!=='done') return;
+        if(activeFilter==='inprog'&&ts!=='inprog') return;
+        if(activeFilter==='todo'&&ts!=='todo') return;
+        if(activeFilter==='high'&&t.pri!=='high') return;
+        if(searchQ&&!t.text.toLowerCase().includes(searchQ)) return;
+
+        const chkCls=ts==='done'?' checked':ts==='inprog'?' inp':'';
+        const chkIcon=ts==='done'?'<i class="ti ti-check" style="font-size:10px"></i>':ts==='inprog'?'<i class="ti ti-player-play" style="font-size:8px"></i>':'';
+        const taskCls=ts==='done'?' done':ts==='inprog'?' inprog':'';
+        const note=D.notes[t.id]||'';
+        const whoBadge=t.who==='uyen'?'badge-uyen':'badge-phuong';
+        const whoLabel=t.who==='uyen'?'Uyên':'Phương';
+        const priCls=t.pri==='high'?'badge-high':t.pri==='med'?'badge-med':'badge-low';
+        const priLabel=t.pri==='high'?'Cao':t.pri==='med'?'Trung bình':'Thấp';
+
+        h+=`<div class="task${taskCls}" id="task_${t.id}">
+          <div class="check${chkCls}" onclick="cycleStatus('${t.id}')" title="Đổi trạng thái">${chkIcon}</div>
+          <div class="task-body">
+            <textarea class="task-text-input" rows="1" title="Double-click để sửa"
+              onchange="editTaskText('${phase.id}','${week.id}','${t.id}',this.value)"
+              oninput="autoResize(this)">${esc(t.text)}</textarea>
+            <div class="task-meta">
+              <span class="badge ${whoBadge}" onclick="cycleWho('${phase.id}','${week.id}','${t.id}')" title="Đổi người phụ trách">${whoLabel}</span>
+              <select class="cat-select" onchange="editTaskCat('${phase.id}','${week.id}','${t.id}',this.value)" title="Đổi danh mục">
+                ${CAT_OPTS.map(c=>`<option${c===t.cat?' selected':''}>${c}</option>`).join('')}
+              </select>
+              <span class="badge ${priCls}" onclick="cyclePri('${phase.id}','${week.id}','${t.id}')" title="Đổi ưu tiên">${priLabel}</span>
+              ${note?`<span style="font-size:11px;color:var(--green)"><i class="ti ti-note" style="font-size:10px"></i> ghi chú</span>`:''}
+            </div>
+            <textarea class="note-area" placeholder="Ghi chú: bug, link tài liệu, quyết định kỹ thuật..."
+              onclick="event.stopPropagation()"
+              oninput="saveNote('${t.id}',this.value)">${esc(note)}</textarea>
+          </div>
+          <div class="task-actions">
+            <button class="btn sm" onclick="toggleNote(event,'task_${t.id}')" title="Ghi chú"><i class="ti ti-note" style="font-size:11px"></i></button>
+            <button class="btn sm danger" onclick="deleteTask('${phase.id}','${week.id}','${t.id}')" title="Xóa"><i class="ti ti-trash" style="font-size:11px"></i></button>
+          </div>
+        </div>`;
+      });
+
+      h+=`</div>
+        <button class="add-task-btn" onclick="addTask('${phase.id}','${week.id}')">
+          <i class="ti ti-plus" style="font-size:12px"></i> Thêm task vào ${esc(week.label)}
+        </button>
+      </div>`;
+    });
+
+    h+=`<button class="add-week-btn" onclick="addWeekToPhase('${phase.id}')">
+      <i class="ti ti-plus" style="font-size:12px"></i> Thêm tuần vào ${esc(phase.label.replace(/Phase \d+ — /,''))}
+    </button></div>`;
+  });
+
+  h+=`<button class="add-phase-btn" onclick="addPhase('new')">
+    <i class="ti ti-plus" style="font-size:14px"></i> Thêm phase mới
+  </button>`;
+
+  c.innerHTML=h;
+  c.querySelectorAll('textarea.task-text-input').forEach(autoResize);
+}
+
+// ─── MILESTONES ───────────────────────────────────────────────
+function renderMilestones(){
+  let h='';
+  D.phases.forEach(phase=>{
+    h+=`<div style="margin-bottom:1.25rem">
+      <div style="font-size:12px;font-weight:500;color:${phase.color};padding:.35rem .8rem;background:${phase.color}18;border-radius:var(--radius);margin-bottom:.5rem;display:inline-flex;align-items:center;gap:6px">
+        <div style="width:8px;height:8px;border-radius:50%;background:${phase.color}"></div>${phase.label}
+      </div>`;
+    phase.weeks.forEach(week=>{
+      const done=week.tasks.length>0&&week.tasks.every(t=>D.status[t.id]==='done');
+      const doneCount=week.tasks.filter(t=>D.status[t.id]==='done').length;
+      const pct=week.tasks.length?Math.round(doneCount/week.tasks.length*100):0;
+      h+=`<div class="ms-item">
+        <div class="ms-dot" style="background:${done?phase.color:'var(--border2)'}"></div>
+        <span class="ms-label${done?' achieved':''}">${week.label}</span>
+        <div style="width:80px"><div class="pbar"><div class="pfill" style="width:${pct}%;background:${phase.color}"></div></div></div>
+        <span style="font-size:11px;color:var(--text3);min-width:55px;text-align:right">${doneCount}/${week.tasks.length} task</span>
+        ${done?`<span style="font-size:10px;padding:2px 8px;border-radius:10px;background:var(--success-bg);color:var(--success-text);font-weight:500"><i class="ti ti-check" style="font-size:10px"></i> xong</span>`:''}
+      </div>`;
+    });
+    h+=`</div>`;
+  });
+  document.getElementById('content').innerHTML=h;
+}
+
+// ─── LOG ─────────────────────────────────────────────────────
+function renderLog(){
+  if(!D.log.length){
+    document.getElementById('content').innerHTML=`<div class="empty"><i class="ti ti-history"></i>Chưa có hoạt động nào.<br>Bắt đầu click task để ghi nhật ký.</div>`;
+    return;
+  }
+  let h=`<div style="display:flex;justify-content:flex-end;margin-bottom:.75rem">
+    <button class="btn danger" onclick="clearLog()"><i class="ti ti-trash" style="font-size:12px"></i> Xóa log</button>
+  </div>`;
+  D.log.slice(0,150).forEach(e=>{
+    h+=`<div class="log-item"><div class="log-time">${e.time}</div><div class="log-text">${e.action} — ${esc(e.task)}</div></div>`;
+  });
+  document.getElementById('content').innerHTML=h;
+}
+
+// ─── IO ──────────────────────────────────────────────────────
+function renderIO(){
+  const all=allTasks();
+  const done=all.filter(t=>D.status[t.id]==='done').length;
+  document.getElementById('content').innerHTML=`
+    <div style="max-width:480px">
+      <p style="font-size:13px;color:var(--text2);margin-bottom:1.25rem">Xuất toàn bộ dữ liệu ra JSON để backup hoặc chia sẻ giữa máy. Nhập JSON để khôi phục.</p>
+      <div style="display:flex;flex-direction:column;gap:.75rem">
+        <button class="btn primary" onclick="exportJSON()" style="justify-content:center;padding:.65rem">
+          <i class="ti ti-download" style="font-size:14px"></i> Xuất JSON (backup toàn bộ)
+        </button>
+        <button class="btn" onclick="importJSON()" style="justify-content:center;padding:.65rem">
+          <i class="ti ti-upload" style="font-size:14px"></i> Nhập JSON (khôi phục)
+        </button>
+        <button class="btn" onclick="exportTXT()" style="justify-content:center;padding:.65rem">
+          <i class="ti ti-file-text" style="font-size:14px"></i> Xuất TXT (báo cáo tiến độ)
+        </button>
+      </div>
+      <div style="margin-top:1.5rem;padding:1rem;background:var(--bg2);border-radius:var(--radius);font-size:12px;color:var(--text2)">
+        <div style="font-weight:500;color:var(--text);margin-bottom:.5rem">Dùng trên nhiều thiết bị</div>
+        <div>1. Máy A: <strong>Xuất JSON</strong> → lưu file</div>
+        <div>2. Máy B: <strong>Nhập JSON</strong> → chọn file vừa lưu</div>
+        <div>3. Dữ liệu đồng bộ ngay lập tức</div>
+      </div>
+      <div style="margin-top:1rem;padding:1rem;background:var(--danger-bg);border-radius:var(--radius);font-size:12px;color:var(--danger-text)">
+        <div style="font-weight:500;margin-bottom:.3rem"><i class="ti ti-alert-triangle" style="font-size:12px"></i> Lưu ý khi Reset</div>
+        Nút Reset sẽ xóa toàn bộ tiến độ và khôi phục roadmap mặc định. Hãy xuất JSON backup trước.
+      </div>
+      <div style="margin-top:1rem;padding:1rem;background:var(--bg2);border-radius:var(--radius);font-size:12px;color:var(--text2)">
+        <div style="font-weight:500;color:var(--text);margin-bottom:.5rem">Thống kê hiện tại</div>
+        <div>Tổng tasks: <strong style="color:var(--text)">${all.length}</strong></div>
+        <div>Hoàn thành: <strong style="color:#0F6E56">${done} (${all.length?Math.round(done/all.length*100):0}%)</strong></div>
+        <div>Đang làm: <strong style="color:var(--accent)">${all.filter(t=>D.status[t.id]==='inprog').length}</strong></div>
+        <div>Chưa làm: <strong style="color:var(--text3)">${all.filter(t=>!D.status[t.id]||D.status[t.id]==='todo').length}</strong></div>
+      </div>
+    </div>`;
+}
+
+// ─── EDIT FUNCTIONS ──────────────────────────────────────────
+function editPhaseLabel(pid,val){
+  const p=D.phases.find(x=>x.id===pid); if(p){ p.label=val; save(); renderStats(); }
+}
+function editWeekLabel(pid,wid,val){
+  const p=D.phases.find(x=>x.id===pid); const w=p?.weeks.find(x=>x.id===wid); if(w){ w.label=val; save(); }
+}
+function editTaskText(pid,wid,tid,val){
+  const p=D.phases.find(x=>x.id===pid); const w=p?.weeks.find(x=>x.id===wid); const t=w?.tasks.find(x=>x.id===tid);
+  if(t){ t.text=val; save(); }
+}
+function editTaskCat(pid,wid,tid,val){
+  const p=D.phases.find(x=>x.id===pid); const w=p?.weeks.find(x=>x.id===wid); const t=w?.tasks.find(x=>x.id===tid);
+  if(t){ t.cat=val; save(); }
+}
+function cycleWho(pid,wid,tid){
+  const p=D.phases.find(x=>x.id===pid); const w=p?.weeks.find(x=>x.id===wid); const t=w?.tasks.find(x=>x.id===tid);
+  if(t){ t.who=t.who==='uyen'?'phuong':'uyen'; save(); renderAll(); }
+}
+function cyclePri(pid,wid,tid){
+  const p=D.phases.find(x=>x.id===pid); const w=p?.weeks.find(x=>x.id===wid); const t=w?.tasks.find(x=>x.id===tid);
+  if(t){ const idx=PRI_OPTS.indexOf(t.pri); t.pri=PRI_OPTS[(idx+1)%3]; save(); renderAll(); }
+}
+function saveNote(tid,val){ D.notes[tid]=val; save(); }
+function toggleNote(e,taskId){ e.stopPropagation(); document.getElementById(taskId)?.classList.toggle('expanded'); }
+function autoResize(el){ el.style.height='auto'; el.style.height=el.scrollHeight+'px'; }
+
+// ─── ADD / DELETE ─────────────────────────────────────────────
+function addTask(pid,wid){
+  const p=D.phases.find(x=>x.id===pid); const w=p?.weeks.find(x=>x.id===wid);
+  if(w){
+    w.tasks.push({id:uid(),text:'Task mới — click để sửa',who:'uyen',cat:'UI',pri:'med'});
+    save(); renderAll();
+  }
+}
+function deleteTask(pid,wid,tid){
+  if(!confirm('Xóa task này?')) return;
+  const p=D.phases.find(x=>x.id===pid); const w=p?.weeks.find(x=>x.id===wid);
+  if(w){ w.tasks=w.tasks.filter(t=>t.id!==tid); delete D.status[tid]; delete D.notes[tid]; save(); renderAll(); }
+}
+function addWeekToPhase(pid){
+  const p=D.phases.find(x=>x.id===pid); if(!p) return;
+  p.weeks.push({id:uid(),label:'Tuần mới',days:'Ngày ?',tasks:[]}); save(); renderAll();
+}
+function deleteWeek(pid,wid){
+  if(!confirm('Xóa tuần này và tất cả task bên trong?')) return;
+  const p=D.phases.find(x=>x.id===pid); if(!p) return;
+  const w=p.weeks.find(x=>x.id===wid);
+  if(w) w.tasks.forEach(t=>{ delete D.status[t.id]; delete D.notes[t.id]; });
+  p.weeks=p.weeks.filter(w=>w.id!==wid); save(); renderAll();
+}
+function addPhase(mode,afterId){
+  const np={id:uid(),label:'Phase mới',color:'#0891B2',weeks:[{id:uid(),label:'Tuần 1',days:'Ngày 1–7',tasks:[]}]};
+  if(mode==='after'&&afterId){ const idx=D.phases.findIndex(p=>p.id===afterId); D.phases.splice(idx+1,0,np); }
+  else D.phases.push(np);
+  save(); renderAll(); showPhaseModal(np.id);
+}
+function deletePhase(pid){
+  if(!confirm('Xóa phase này và toàn bộ dữ liệu bên trong?')) return;
+  const p=D.phases.find(x=>x.id===pid);
+  if(p) p.weeks.forEach(w=>w.tasks.forEach(t=>{ delete D.status[t.id]; delete D.notes[t.id]; }));
+  D.phases=D.phases.filter(p=>p.id!==pid);
+  if(activePhase===pid) activePhase='all';
+  save(); renderAll();
+}
+
+// ─── PHASE COLOR MODAL ───────────────────────────────────────
+function showPhaseModal(pid){
+  const p=D.phases.find(x=>x.id===pid); if(!p) return;
+  document.getElementById('modal-body').innerHTML=`
+    <h3><i class="ti ti-palette" style="font-size:14px;margin-right:5px"></i>Chỉnh phase: ${esc(p.label)}</h3>
+    <label>Tên phase</label>
+    <input id="pm-label" value="${esc(p.label)}">
+    <label>Màu sắc</label>
+    <div class="color-row" id="pm-colors">
+      ${COLORS.map(c=>`<div class="color-swatch${c===p.color?' selected':''}" style="background:${c}" onclick="selectColor(this,'${c}')" title="${c}"></div>`).join('')}
+    </div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeModal()">Hủy</button>
+      <button class="btn primary" onclick="applyPhaseEdit('${pid}')">Lưu</button>
+    </div>`;
+  document.getElementById('modal').style.display='flex';
+}
+function selectColor(el,c){
+  document.querySelectorAll('.color-swatch').forEach(s=>s.classList.remove('selected'));
+  el.classList.add('selected'); el.dataset.color=c;
+}
+function applyPhaseEdit(pid){
+  const p=D.phases.find(x=>x.id===pid); if(!p) return;
+  p.label=document.getElementById('pm-label').value;
+  const sel=document.querySelector('.color-swatch.selected');
+  if(sel) p.color=sel.dataset.color||sel.style.backgroundColor||p.color;
+  closeModal(); save(); renderAll();
+}
+function closeModal(){ document.getElementById('modal').style.display='none'; }
+
+// ─── IMPORT / EXPORT ─────────────────────────────────────────
+function exportJSON(){
+  const blob=new Blob([JSON.stringify(D,null,2)],{type:'application/json'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download=`listenmind_tracker_${new Date().toISOString().slice(0,10)}.json`; a.click();
+}
+function importJSON(){ document.getElementById('file-input').click(); }
+function handleImport(e){
+  const f=e.target.files[0]; if(!f) return;
+  const r=new FileReader();
+  r.onload=ev=>{
+    try{
+      const d=JSON.parse(ev.target.result);
+      if(!d.phases) throw new Error('Không đúng định dạng');
+      if(!confirm('Nhập JSON sẽ ghi đè dữ liệu hiện tại. Tiếp tục?')) return;
+      D=d; save(); renderAll(); alert('Nhập thành công!');
+    }catch(err){ alert('File JSON không hợp lệ: '+err.message); }
+  };
+  r.readAsText(f); e.target.value='';
+}
+function exportTXT(){
+  const lines=['ListenMind Project — Báo cáo tiến độ','='.repeat(60),`Xuất lúc: ${new Date().toLocaleString('vi-VN')}`,''];
+  D.phases.forEach(ph=>{
+    lines.push(`[${ph.label}]`);
+    ph.weeks.forEach(wk=>{
+      lines.push(`  ${wk.label}`);
+      wk.tasks.forEach(t=>{
+        const ts=D.status[t.id]||'todo';
+        const who=t.who==='uyen'?'Uyên  ':'Phương';
+        lines.push(`    [${ts==='done'?'X':ts==='inprog'?'>':' '}] [${who}] [${t.cat}] [${t.pri}] ${t.text.replace(/\n/g,' ')}`);
+        if(D.notes[t.id]) lines.push(`        Ghi chú: ${D.notes[t.id]}`);
+      });
+    });
+    lines.push('');
+  });
+  const all=allTasks();
+  const done=all.filter(t=>D.status[t.id]==='done').length;
+  lines.push('── Thống kê ──',
+    `Tổng: ${all.length} task`,
+    `Hoàn thành: ${done} (${all.length?Math.round(done/all.length*100):0}%)`,
+    `Đang làm: ${all.filter(t=>D.status[t.id]==='inprog').length}`,
+    `Chưa làm: ${all.filter(t=>!D.status[t.id]||D.status[t.id]==='todo').length}`,'');
+  if(D.log.length){
+    lines.push('── Nhật ký ──');
+    D.log.slice(0,50).forEach(e=>lines.push(`${e.time} | ${e.action} | ${e.task}`));
+  }
+  const blob=new Blob([lines.join('\n')],{type:'text/plain;charset=utf-8'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download=`listenmind_progress_${new Date().toISOString().slice(0,10)}.txt`; a.click();
+}
+
+// ─── HELPERS ─────────────────────────────────────────────────
+function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function clearLog(){ if(confirm('Xóa toàn bộ nhật ký?')){ D.log=[]; save(); renderLog(); } }
+function resetAll(){
+  if(confirm('Reset toàn bộ? Hành động này không thể hoàn tác.\n\nHãy xuất JSON backup trước nếu cần.')){
+    D=defaultData(); save(); renderAll();
+  }
+}
+function switchTab(tab,el){
+  activeTab=tab;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  renderAll();
+}
+function setPhase(id){ activePhase=id; renderTasks(); }
+function setFilter(f){ activeFilter=f; renderTasks(); }
+
+let searchQ='';
+function doSearch(v){ searchQ=v.toLowerCase().trim(); renderTasks(); }
+
+function renderAll(){
+  renderStats();
+  if(activeTab==='tasks') renderTasks();
+  else if(activeTab==='milestones') renderMilestones();
+  else if(activeTab==='log') renderLog();
+  else renderIO();
+}
+
+load(); renderAll();
 </script>
 </body>
 </html>
